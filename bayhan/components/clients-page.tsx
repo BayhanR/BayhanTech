@@ -142,7 +142,7 @@ export default function ClientsPage({ onNavigate, direction }: ClientsPageProps)
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" })
   }
 
-  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
     ref.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
