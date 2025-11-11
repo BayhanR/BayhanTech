@@ -178,25 +178,6 @@ export default function HomePage({ onNavigate, direction, fromPage }: HomePagePr
 
   const variant = getVariants(direction, fromPage)
 
-  const serviceHighlights = [
-    {
-      title: "Web Sitesi Kurma",
-      description: "Next.js ve .NET ile hızlı açılan, mobil uyumlu ve marka kimliğine uygun kurumsal web siteleri inşa ediyorum.",
-    },
-    {
-      title: "SEO Desteği",
-      description: "Teknik SEO denetimi, içerik stratejisi ve Google Business optimizasyonu ile arama görünürlüğünüzü güçlendiriyorum.",
-    },
-    {
-      title: "Dijital Danışmanlık",
-      description: "KOBİ ve butik markalar için dijital dönüşüm, entegrasyon ve sürdürülebilir büyüme odaklı yol haritaları hazırlıyorum.",
-    },
-    {
-      title: "Bakım & Performans",
-      description: "VDS yönetimi, güvenlik güncellemeleri ve Core Web Vitals optimizasyonları ile kesintisiz hizmet sağlıyorum.",
-    },
-  ]
-
   return (
     <motion.div
       initial={variant.initial}
@@ -289,28 +270,6 @@ export default function HomePage({ onNavigate, direction, fromPage }: HomePagePr
         >
           Full-Stack Developer | .NET, React, SAP ABAP
         </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="grid w-full max-w-4xl gap-4 px-6 sm:grid-cols-2"
-          aria-label="Furkan Bayhan profesyonel hizmetleri"
-        >
-          {serviceHighlights.map((service, index) => (
-            <motion.div
-              key={service.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 + index * 0.1, duration: 0.6 }}
-              whileHover={{ scale: 1.03, y: -4 }}
-              className="rounded-xl border border-primary/20 bg-background/70 p-4 text-left shadow-lg shadow-primary/10 backdrop-blur"
-            >
-              <h2 className="text-lg font-semibold text-foreground">{service.title}</h2>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{service.description}</p>
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
     </motion.div>
   )

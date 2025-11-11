@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Download, Mail, Phone, MapPin, Linkedin } from "lucide-react"
+import { Download, Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { PageType, Direction } from "@/app/page"
 
@@ -134,6 +134,12 @@ export default function AboutPage({ onNavigate, direction }: AboutPageProps) {
                 <div className="flex items-center gap-3">
                   <Mail className="h-5 w-5 text-primary" />
                   <span className="text-foreground">bayhan.dev@gmail.com</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Globe className="h-5 w-5 text-primary" />
+                  <a href="https://bayhan.tech" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary">
+                    bayhan.tech
+                  </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-primary" />

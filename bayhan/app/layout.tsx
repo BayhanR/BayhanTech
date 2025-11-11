@@ -18,6 +18,7 @@ const siteUrl = "https://bayhan.tech"
 const siteTitle = "Furkan Bayhan | Web Sitesi Geliştirme & SEO Danışmanlığı"
 const siteDescription =
   "Furkan Bayhan; Next.js, .NET ve SAP ABAP altyapısıyla KOBİ’lere özel web sitesi kurulum, SEO optimizasyonu, dijital danışmanlık ve sürdürülebilir bakım hizmetleri sunar."
+const logoPath = "/Adsız_tasarım-removebg-preview.png"
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -25,7 +26,7 @@ const structuredData = {
   name: "bayhan.tech",
   description: siteDescription,
   url: siteUrl,
-  image: `${siteUrl}/icon.svg`,
+  image: `${siteUrl}${logoPath}`,
   telephone: "+90 506 140 47 27",
   email: "mailto:bayhan.dev@gmail.com",
   areaServed: ["Türkiye", "Avrupa"],
@@ -140,9 +141,9 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: `${siteUrl}/icon.svg`,
-        width: 512,
-        height: 512,
+        url: `${siteUrl}${logoPath}`,
+        width: 500,
+        height: 500,
         alt: "Furkan Bayhan - Web Sitesi ve SEO Danışmanlığı",
       },
     ],
@@ -152,7 +153,7 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
     creator: "@bayhan1606",
-    images: [`${siteUrl}/icon.svg`],
+    images: [`${siteUrl}${logoPath}`],
   },
   robots: {
     index: true,
@@ -164,21 +165,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
+    icon: [{ url: logoPath, type: "image/png" }],
+    shortcut: [{ url: logoPath, type: "image/png" }],
+    apple: [{ url: logoPath, type: "image/png" }],
   },
 }
 
