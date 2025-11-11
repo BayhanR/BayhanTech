@@ -15,15 +15,16 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 const siteUrl = "https://bayhan.tech"
-const siteTitle = "Furkan Bayhan | Web Sitesi Geliştirme & SEO Danışmanlığı"
+const siteTitle = "Bayhan Tech | Web Sitesi Geliştirme, SEO Hizmeti & Next.js Geliştirme"
 const siteDescription =
-  "Furkan Bayhan; Next.js, .NET ve SAP ABAP altyapısıyla KOBİ’lere özel web sitesi kurulum, SEO optimizasyonu, dijital danışmanlık ve sürdürülebilir bakım hizmetleri sunar."
-const logoPath = "/Adsız_tasarım-removebg-preview.png"
+  "Bayhan Tech; Next.js web geliştirme, SEO hizmeti, web sitesi kurma, e-ticaret çözümleri, dijital danışmanlık ve teknik destek hizmetleri sunar. Next.js ile modern web siteleri geliştiriyoruz."
+const logoPath = "/bayhan-logo.png"
 
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
-  name: "bayhan.tech",
+  name: "Bayhan Tech",
+  alternateName: "bayhan.tech",
   description: siteDescription,
   url: siteUrl,
   image: `${siteUrl}${logoPath}`,
@@ -43,32 +44,43 @@ const structuredData = {
   },
   serviceType: [
     "Web sitesi kurma",
-    "SEO desteği",
-    "Dijital danışmanlık",
+    "Web sitesi geliştirme",
+    "Next.js web geliştirme",
     "Next.js geliştirme",
-    ".NET entegrasyonları",
-    "SAP ABAP çözümleri",
+    "Next.js ile web sitesi",
+    "SEO hizmeti",
+    "SEO desteği",
+    "SEO optimizasyonu",
+    "Web geliştirme",
+    "Web tasarım",
+    "E-ticaret sitesi",
+    "E-ticaret çözümleri",
+    "Dijital danışmanlık",
+    "Google İşletme Yönetimi",
+    "Sunucu ve hosting yönetimi",
     "Bakım ve teknik destek",
     "Performans optimizasyonu",
+    ".NET entegrasyonları",
+    "SAP ABAP çözümleri",
   ],
   hasOfferCatalog: {
     "@type": "OfferCatalog",
-    name: "bayhan.tech Hizmet Kataloğu",
+    name: "Bayhan Tech Hizmet Kataloğu",
     itemListElement: [
       {
         "@type": "Offer",
         itemOffered: {
           "@type": "Service",
           name: "Web Sitesi Geliştirme",
-          description: "Next.js, React ve .NET ile hızlı, responsive ve SEO uyumlu web çözümleri.",
+          description: "Bayhan Tech olarak Next.js web geliştirme, Next.js ile web sitesi kurma ve modern web geliştirme hizmetleri sunuyoruz. Next.js, React ve .NET ile hızlı, responsive ve SEO uyumlu web çözümleri.",
         },
       },
       {
         "@type": "Offer",
         itemOffered: {
           "@type": "Service",
-          name: "SEO Optimizasyonu",
-          description: "Teknik SEO, içerik stratejisi ve Google görünürlüğü için optimizasyon paketleri.",
+          name: "SEO Hizmeti ve Optimizasyonu",
+          description: "Bayhan Tech SEO hizmeti ile arama motorlarında üst sıralarda yer alın. Teknik SEO, içerik stratejisi, SEO danışmanlığı ve Google görünürlüğü için optimizasyon paketleri.",
         },
       },
       {
@@ -76,7 +88,7 @@ const structuredData = {
         itemOffered: {
           "@type": "Service",
           name: "Dijital Danışmanlık",
-          description: "KOBİ’ler için dijital strateji, marka kimliği ve dönüşüm odaklı danışmanlık.",
+          description: "Bayhan Tech dijital danışmanlık hizmeti ile KOBİ'ler için dijital strateji, marka kimliği ve dönüşüm odaklı danışmanlık sunuyoruz.",
         },
       },
       {
@@ -84,7 +96,7 @@ const structuredData = {
         itemOffered: {
           "@type": "Service",
           name: "Sunucu ve Hosting Yönetimi",
-          description: "VDS üzerinde güvenli barındırma, bakım ve sürekli performans takibi.",
+          description: "Bayhan Tech sunucu yönetimi ve hosting yönetimi hizmeti. VDS üzerinde güvenli barındırma, bakım ve sürekli performans takibi.",
         },
       },
       {
@@ -92,7 +104,7 @@ const structuredData = {
         itemOffered: {
           "@type": "Service",
           name: "Bakım & Teknik Destek",
-          description: "Güncelleme, güvenlik, bug fix ve sürdürülebilir bakım hizmetleri.",
+          description: "Bayhan Tech web bakım ve teknik destek hizmeti. Güncelleme, güvenlik, bug fix ve sürdürülebilir bakım hizmetleri.",
         },
       },
       {
@@ -111,23 +123,42 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: siteTitle,
-    template: "%s | Furkan Bayhan",
+    template: "%s | Bayhan Tech",
   },
   description: siteDescription,
   keywords: [
+    "Bayhan Tech",
+    "bayhan tech",
     "web sitesi kurma",
+    "web sitesi geliştirme",
+    "web geliştirme",
+    "Next.js web geliştirme",
+    "Next.js geliştirme",
+    "Next.js ile web sitesi",
     "Next.js geliştirici",
+    "Next.js developer",
+    "SEO hizmeti",
     "SEO desteği",
+    "SEO optimizasyonu",
+    "SEO danışmanlığı",
+    "web tasarım",
     "kurumsal web tasarım",
+    "e-ticaret sitesi",
+    "e-ticaret çözümleri",
     "dijital danışmanlık",
+    "Google İşletme Yönetimi",
+    "hosting yönetimi",
+    "sunucu yönetimi",
+    "teknik destek",
+    "web bakım",
     "KOBİ web çözümleri",
     "Furkan Bayhan",
     "bayhan.tech",
   ],
-  applicationName: "bayhan.tech",
+  applicationName: "Bayhan Tech",
   authors: [{ name: "Furkan Bayhan", url: siteUrl }],
   creator: "Furkan Bayhan",
-  publisher: "bayhan.tech",
+  publisher: "Bayhan Tech",
   category: "technology",
   alternates: {
     canonical: siteUrl,
@@ -136,7 +167,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "tr_TR",
     url: siteUrl,
-    siteName: "bayhan.tech",
+    siteName: "Bayhan Tech",
     title: siteTitle,
     description: siteDescription,
     images: [
@@ -144,7 +175,7 @@ export const metadata: Metadata = {
         url: `${siteUrl}${logoPath}`,
         width: 500,
         height: 500,
-        alt: "Furkan Bayhan - Web Sitesi ve SEO Danışmanlığı",
+        alt: "Bayhan Tech - Web Sitesi Geliştirme ve SEO Hizmeti",
       },
     ],
   },

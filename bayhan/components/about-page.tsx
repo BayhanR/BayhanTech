@@ -232,7 +232,7 @@ export default function AboutPage({ onNavigate, direction }: AboutPageProps) {
             </CardHeader>
             <CardContent>
               <div>
-                <h3 className="text-xl font-bold text-primary mb-1">Bilgisayar Mühendisliği</h3>
+                <h3 className="text-xl font-bold text-primary mb-1">Balıkesir Üniversitesi - Bilgisayar Mühendisliği</h3>
                 <p className="text-muted-foreground">2021 - 2025</p>
               </div>
             </CardContent>

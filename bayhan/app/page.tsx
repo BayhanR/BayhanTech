@@ -7,10 +7,9 @@ import HomePage from "@/components/home-page"
 import AboutPage from "@/components/about-page"
 import ProjectsPage from "@/components/projects-page"
 import ClientsPage from "@/components/clients-page"
-import ResumePage from "@/components/resume-page"
 import PortalPage from "@/components/portal-page"
 
-export type PageType = "home" | "about" | "projects" | "clients" | "resume" | "portal"
+export type PageType = "home" | "about" | "projects" | "clients" | "portal"
 export type Direction = "left" | "right" | "down" | "up"
 
 export default function Home() {
@@ -56,9 +55,6 @@ export default function Home() {
             dragOffset={{ x: 0, y: 0 }}
             onDragUpdate={() => {}}
           />
-        )}
-        {currentPage === "resume" && (
-          <ResumePage key="resume" onNavigate={handleNavigate} direction={direction} />
         )}
         {currentPage === "portal" && (
           <PortalPage key="portal" onNavigate={handleNavigate} direction={direction} />

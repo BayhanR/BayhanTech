@@ -11,9 +11,9 @@ export function BayhanTechLogo({ className = "" }: { className?: string }) {
       transition={{ duration: 0.5 }}
       className={`flex items-center gap-4 ${className}`}
     >
-      <div className="relative h-14 w-14 shrink-0 rounded-xl bg-background/80 p-1.5 shadow-lg shadow-primary/20 backdrop-blur">
+      <div className="relative h-14 w-14 shrink-0">
         <Image
-          src="/Adsız_tasarım-removebg-preview.png"
+          src="/bayhan-logo.png"
           alt="Bayhan Tech logosu"
           fill
           priority

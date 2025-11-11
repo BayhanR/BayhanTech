@@ -53,35 +53,35 @@ const marqueeLogos = [
 const services = [
     {
     title: "🌐 Web Sitesi Geliştirme",
-    description: "Next.js ve modern teknolojilerle hızlı, mobil uyumlu web siteleri.",
+    description: "Bayhan Tech olarak Next.js web geliştirme ve Next.js ile web sitesi kurma hizmeti sunuyoruz. Next.js ve modern teknolojilerle hızlı, mobil uyumlu web siteleri geliştiriyoruz.",
   },
   {
     title: "⚙️ Eklenti & Entegrasyon",
-    description: "İşletmelere özel fonksiyonlar, eklentiler ve API bağlantıları.",
+    description: "Bayhan Tech eklenti ve entegrasyon hizmeti. İşletmelere özel fonksiyonlar, eklentiler ve API bağlantıları geliştiriyoruz.",
   },
   {
     title: "🧭 SEO Optimizasyonu",
-    description: "Arama motorlarında üst sıralar için teknik ve içerik optimizasyonu.",
+    description: "Bayhan Tech SEO hizmeti ile arama motorlarında üst sıralarda yer alın. SEO optimizasyonu, teknik SEO ve içerik optimizasyonu hizmetleri sunuyoruz.",
   },
   {
     title: "📍 Google İşletme Yönetimi",
-    description: "Google Haritalar ve işletme görünürlüğü için kayıt & optimizasyon.",
+    description: "Bayhan Tech Google İşletme Yönetimi hizmeti. Google Haritalar ve işletme görünürlüğü için kayıt & optimizasyon yapıyoruz.",
     },
     {
     title: "💬 Dijital Danışmanlık",
-    description: "Marka kimliği, dijital strateji ve dönüşüm danışmanlığı.",
+    description: "Bayhan Tech dijital danışmanlık hizmeti. Marka kimliği, dijital strateji ve dönüşüm danışmanlığı sunuyoruz.",
   },
   {
     title: "☁️ Sunucu & Hosting Yönetimi",
-    description: "Bayhan.tech altyapısıyla kesintisiz ve güvenli barındırma.",
+    description: "Bayhan Tech sunucu yönetimi ve hosting yönetimi hizmeti. Bayhan Tech altyapısıyla kesintisiz ve güvenli barındırma sağlıyoruz.",
   },
   {
     title: "🧰 Bakım & Teknik Destek",
-    description: "Güvenlik, güncelleme ve performans yönetimi.",
+    description: "Bayhan Tech web bakım ve teknik destek hizmeti. Güvenlik, güncelleme ve performans yönetimi yapıyoruz.",
   },
   {
     title: "⚡ Performans & UX Analizi",
-    description: "Kullanıcı deneyimi ve hız odaklı iyileştirmeler.",
+    description: "Bayhan Tech performans ve UX analizi hizmeti. Kullanıcı deneyimi ve hız odaklı iyileştirmeler yapıyoruz.",
     },
   ]
 
@@ -282,7 +282,6 @@ export default function ClientsPage({ onNavigate, direction }: ClientsPageProps)
         <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 text-primary">
             <BayhanTechLogo className="h-10 w-auto" />
-            <span className="hidden text-sm font-medium text-muted-foreground sm:inline">bayhan.tech</span>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <Button
@@ -350,7 +349,7 @@ export default function ClientsPage({ onNavigate, direction }: ClientsPageProps)
               transition={{ delay: 0.3, type: "spring", stiffness: 200, damping: 25 }}
               className="text-4xl sm:text-5xl font-bold text-primary"
             >
-              Hizmetlerimiz
+            Ne Yapıyoruz?
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: -10 }}
@@ -358,9 +357,7 @@ export default function ClientsPage({ onNavigate, direction }: ClientsPageProps)
               transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 25 }}
               className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed"
             >
-              Modern web teknolojileri ve SEO yönetimiyle sitenizin görünürlüğünü artırıyoruz. Arama motorlarında üst
-              sıralarda yer almanızı sağlayarak dijital varlığınızı güçlendiriyoruz. Performans odaklı çözümlerle
-              kullanıcı deneyimini optimize ediyor ve markanızın online başarısına katkıda bulunuyoruz.
+              <strong className="text-foreground">Bayhan Tech</strong> olarak Next.js web geliştirme, SEO hizmeti ve web sitesi geliştirme alanında uzmanız. Modern web teknolojileri ve SEO yönetimiyle sitenizin görünürlüğünü artırıyoruz. Google'ın web sitelerini öne çıkarmasında en önemli faktörlerden biri olan <strong className="text-foreground">site hızı ve optimizasyonu</strong> konusunda uzmanız. Next.js ile web sitesi kurma, SEO hizmeti ve web geliştirme hizmetlerimizle arama motorlarında üst sıralarda yer almanızı sağlayarak dijital varlığınızı güçlendiriyoruz. Performans odaklı çözümlerle kullanıcı deneyimini optimize ediyor ve markanızın online başarısına katkıda bulunuyoruz.
             </motion.p>
           </motion.section>
 

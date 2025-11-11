@@ -51,15 +51,6 @@ const getVariants = (dir: Direction, fromPage?: PageType) => {
     }
   }
   
-  // Resume'den geliyorsa (Resume About'un altında, Home'un sağında): Home soldan gelmeli
-  if (fromPage === "resume" && dir === "left") {
-    return {
-      initial: { x: "-100%" }, // Soldan gel (Resume Home'un sağında, About'un altında)
-      animate: { x: 0 },
-      exit: { x: "-100%" }, // Sola git (Clients'e giderken) - DOĞRU
-    }
-  }
-  
   // Home'dan çıkış animasyonları (fromPage yoksa - ilk kez Home'dan çıkıyoruz)
   // Home → Clients: direction="left" → Home sağa gitmeli (Clients Home'un solunda)
   if (!fromPage && dir === "left") {
@@ -226,7 +217,7 @@ export default function HomePage({ onNavigate, direction, fromPage }: HomePagePr
         onClick={() => onNavigate("clients", "left")}
         className="group absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 flex cursor-grab items-center gap-1 md:gap-2 bg-transparent px-3 md:px-6 py-3 md:py-4 text-foreground opacity-30 transition-opacity duration-300 hover:opacity-100 active:cursor-grabbing touch-none"
       >
-        <span className="text-sm md:text-lg font-semibold hidden sm:inline">Müşteriler</span>
+        <span className="text-sm md:text-lg font-semibold hidden sm:inline">Hizmetler ve İletişim</span>
         <div className="h-8 md:h-12 w-1 rounded-full bg-primary" />
       </motion.button>
 
