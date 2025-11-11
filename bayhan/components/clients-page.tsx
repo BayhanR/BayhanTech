@@ -92,6 +92,7 @@ export default function ClientsPage({ onNavigate, direction }: ClientsPageProps)
   const portfolioRef = useRef<HTMLDivElement>(null)
   const brandsRef = useRef<HTMLDivElement>(null)
   const contactRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const [formData, setFormData] = useState({ name: "", email: "", message: "", services: [] as string[] })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
@@ -136,6 +137,83 @@ export default function ClientsPage({ onNavigate, direction }: ClientsPageProps)
 
     container.addEventListener("scroll", handleScroll)
     return () => container.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Canvas animasyonu - Kod karakterleri
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    // Kod karakterleri ve kelimeler
+    const codeChars = ['{', '}', '<', '>', ';', '=', '(', ')', '[', ']', '|', '/', '*', '&', '%', '$', '#', '@', '!', '?', ':', '-', '+', '~', '^', '\\', '`', '.', ',', '"', "'"]
+    const codeWords = ['if', 'else', 'for', 'while', 'const', 'let', 'var', 'function', 'return', 'import', 'export', 'async', 'await', 'try', 'catch', 'class', 'extends', 'interface', 'type', 'div', 'span', 'button', 'input', 'img', 'a', 'p', 'h1', 'h2', 'h3', 'ul', 'li', 'React', 'Next', 'TypeScript', 'JSX', 'HTML', 'CSS', 'API', 'useState', 'useEffect', 'props', 'state', 'ref', 'key', 'onClick', 'className', 'style', 'id', 'href', 'src', 'alt']
+    // Teknoloji komutları ve terimleri
+    const pythonTerms = ['pip', 'import', 'def', 'class', 'print', 'len', 'range', 'list', 'dict', 'tuple', 'str', 'int', 'float', 'bool', 'True', 'False', 'None', '__init__', '__main__', 'self', 'lambda', 'map', 'filter', 'reduce', 'json', 'os', 'sys', 'datetime', 'requests', 'numpy', 'pandas']
+    const sapAbapTerms = ['zm36', 'SE11', 'SE80', 'SE38', 'SE24', 'TCODE', 'REPORT', 'FUNCTION', 'MODULE', 'DATA', 'TYPES', 'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'COMMIT', 'ROLLBACK', 'LOOP', 'ENDLOOP', 'IF', 'ENDIF', 'CASE', 'ENDCASE', 'CALL', 'METHOD', 'CLASS', 'INTERFACE', 'INCLUDE', 'FORM', 'ENDFORM']
+    const csharpTerms = ['dotnet', 'nuget', 'using', 'namespace', 'public', 'private', 'static', 'void', 'int', 'string', 'bool', 'var', 'new', 'this', 'base', 'override', 'virtual', 'abstract', 'async', 'await', 'Task', 'List', 'Dictionary', 'LINQ', 'Entity', 'DbContext', 'Controller', 'ActionResult']
+    const dotnetTerms = ['dotnet', 'nuget', 'csproj', 'sln', 'dll', 'exe', 'appsettings', 'Startup', 'Program', 'Middleware', 'DependencyInjection', 'IoC', 'EF Core', 'MVC', 'WebAPI', 'Razor', 'Blazor']
+    const reactTerms = ['npm', 'yarn', 'npx', 'package.json', 'node_modules', 'useState', 'useEffect', 'useContext', 'useReducer', 'useMemo', 'useCallback', 'useRef', 'props', 'state', 'component', 'JSX', 'TSX', 'router', 'Link', 'Image', 'Head']
+    const sqlTerms = ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'WHERE', 'JOIN', 'INNER', 'LEFT', 'RIGHT', 'ON', 'GROUP BY', 'ORDER BY', 'HAVING', 'COUNT', 'SUM', 'AVG', 'MAX', 'MIN', 'DISTINCT', 'UNION', 'CREATE', 'ALTER', 'DROP', 'TABLE', 'INDEX', 'PRIMARY KEY', 'FOREIGN KEY']
+    const gitTerms = ['git', 'commit', 'push', 'pull', 'branch', 'merge', 'rebase', 'clone', 'fork', 'pull request', 'HEAD', 'master', 'main', 'develop', 'stash', 'cherry-pick', 'reset', 'revert', 'diff', 'log', 'status', 'add', 'rm', 'mv']
+    const dockerTerms = ['docker', 'Dockerfile', 'docker-compose', 'image', 'container', 'run', 'build', 'push', 'pull', 'exec', 'ps', 'logs', 'stop', 'rm', 'volume', 'network', 'port', 'env', 'CMD', 'ENTRYPOINT', 'EXPOSE', 'WORKDIR']
+    
+    const allCodeItems = [...codeChars, ...codeWords, ...pythonTerms, ...sapAbapTerms, ...csharpTerms, ...dotnetTerms, ...reactTerms, ...sqlTerms, ...gitTerms, ...dockerTerms]
+    
+    const particles: { x: number; y: number; vx: number; vy: number; char: string; fontSize: number }[] = []
+    const particleCount = 100
+
+    for (let i = 0; i < particleCount; i++) {
+      const item = allCodeItems[Math.floor(Math.random() * allCodeItems.length)]
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        char: item,
+        fontSize: item.length > 10 ? Math.random() * 4 + 7 : item.length > 1 ? Math.random() * 6 + 8 : Math.random() * 8 + 10,
+      })
+    }
+
+    function animate() {
+      if (!canvas || !ctx) return
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+      // Font ayarları
+      ctx.font = 'monospace'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+
+      particles.forEach((p) => {
+        p.x += p.vx
+        p.y += p.vy
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1
+
+        // Karakteri çiz
+        ctx.font = `${p.fontSize}px monospace`
+        ctx.fillStyle = "rgba(220, 38, 38, 0.6)"
+        ctx.fillText(p.char, p.x, p.y)
+      })
+
+      requestAnimationFrame(animate)
+    }
+
+    animate()
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   const scrollToTop = () => {
@@ -187,6 +265,13 @@ export default function ClientsPage({ onNavigate, direction }: ClientsPageProps)
         background: "linear-gradient(135deg, #0d1117 0%, #161b22 100%)",
       }}
     >
+      {/* Canvas - Arka plan animasyonu */}
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full z-0 pointer-events-none"
+        style={{ opacity: 0.3 }}
+      />
+      
       {/* Navbar - Şeffaf, en üste */}
       <motion.nav
         initial={{ opacity: 0, y: -20 }}
@@ -250,7 +335,7 @@ export default function ClientsPage({ onNavigate, direction }: ClientsPageProps)
         <span className="text-sm md:text-lg font-semibold hidden sm:inline">Ana Sayfa</span>
       </motion.button>
 
-      <div ref={scrollContainerRef} className="h-full overflow-y-auto px-4 py-10 sm:px-6 md:px-8 pt-24">
+      <div ref={scrollContainerRef} className="relative z-10 h-full overflow-y-auto px-4 py-10 sm:px-6 md:px-8 pt-24">
         <div className="mx-auto max-w-5xl w-full space-y-12">
           {/* Hizmet Açıklaması */}
           <motion.section

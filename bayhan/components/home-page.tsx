@@ -132,44 +132,22 @@ export default function HomePage({ onNavigate, direction, fromPage }: HomePagePr
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    // Kod karakterleri ve kelimeler
-    const codeChars = ['{', '}', '<', '>', ';', '=', '(', ')', '[', ']', '|', '/', '*', '&', '%', '$', '#', '@', '!', '?', ':', '-', '+', '~', '^', '\\', '`', '.', ',', '"', "'"]
-    const codeWords = ['if', 'else', 'for', 'while', 'const', 'let', 'var', 'function', 'return', 'import', 'export', 'async', 'await', 'try', 'catch', 'class', 'extends', 'interface', 'type', 'div', 'span', 'button', 'input', 'img', 'a', 'p', 'h1', 'h2', 'h3', 'ul', 'li', 'React', 'Next', 'TypeScript', 'JSX', 'HTML', 'CSS', 'API', 'useState', 'useEffect', 'props', 'state', 'ref', 'key', 'onClick', 'className', 'style', 'id', 'href', 'src', 'alt']
-    // Teknoloji komutları ve terimleri
-    const pythonTerms = ['pip', 'import', 'def', 'class', 'print', 'len', 'range', 'list', 'dict', 'tuple', 'str', 'int', 'float', 'bool', 'True', 'False', 'None', '__init__', '__main__', 'self', 'lambda', 'map', 'filter', 'reduce', 'json', 'os', 'sys', 'datetime', 'requests', 'numpy', 'pandas']
-    const sapAbapTerms = ['zm36', 'SE11', 'SE80', 'SE38', 'SE24', 'TCODE', 'REPORT', 'FUNCTION', 'MODULE', 'DATA', 'TYPES', 'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'COMMIT', 'ROLLBACK', 'LOOP', 'ENDLOOP', 'IF', 'ENDIF', 'CASE', 'ENDCASE', 'CALL', 'METHOD', 'CLASS', 'INTERFACE', 'INCLUDE', 'FORM', 'ENDFORM']
-    const csharpTerms = ['dotnet', 'nuget', 'using', 'namespace', 'public', 'private', 'static', 'void', 'int', 'string', 'bool', 'var', 'new', 'this', 'base', 'override', 'virtual', 'abstract', 'async', 'await', 'Task', 'List', 'Dictionary', 'LINQ', 'Entity', 'DbContext', 'Controller', 'ActionResult']
-    const dotnetTerms = ['dotnet', 'nuget', 'csproj', 'sln', 'dll', 'exe', 'appsettings', 'Startup', 'Program', 'Middleware', 'DependencyInjection', 'IoC', 'EF Core', 'MVC', 'WebAPI', 'Razor', 'Blazor']
-    const reactTerms = ['npm', 'yarn', 'npx', 'package.json', 'node_modules', 'useState', 'useEffect', 'useContext', 'useReducer', 'useMemo', 'useCallback', 'useRef', 'props', 'state', 'component', 'JSX', 'TSX', 'router', 'Link', 'Image', 'Head']
-    const sqlTerms = ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'WHERE', 'JOIN', 'INNER', 'LEFT', 'RIGHT', 'ON', 'GROUP BY', 'ORDER BY', 'HAVING', 'COUNT', 'SUM', 'AVG', 'MAX', 'MIN', 'DISTINCT', 'UNION', 'CREATE', 'ALTER', 'DROP', 'TABLE', 'INDEX', 'PRIMARY KEY', 'FOREIGN KEY']
-    const gitTerms = ['git', 'commit', 'push', 'pull', 'branch', 'merge', 'rebase', 'clone', 'fork', 'pull request', 'HEAD', 'master', 'main', 'develop', 'stash', 'cherry-pick', 'reset', 'revert', 'diff', 'log', 'status', 'add', 'rm', 'mv']
-    const dockerTerms = ['docker', 'Dockerfile', 'docker-compose', 'image', 'container', 'run', 'build', 'push', 'pull', 'exec', 'ps', 'logs', 'stop', 'rm', 'volume', 'network', 'port', 'env', 'CMD', 'ENTRYPOINT', 'EXPOSE', 'WORKDIR']
-    
-    const allCodeItems = [...codeChars, ...codeWords, ...pythonTerms, ...sapAbapTerms, ...csharpTerms, ...dotnetTerms, ...reactTerms, ...sqlTerms, ...gitTerms, ...dockerTerms]
-    
-    const particles: { x: number; y: number; vx: number; vy: number; char: string; fontSize: number }[] = []
+    const particles: { x: number; y: number; vx: number; vy: number; radius: number }[] = []
     const particleCount = 100
 
     for (let i = 0; i < particleCount; i++) {
-      const item = allCodeItems[Math.floor(Math.random() * allCodeItems.length)]
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
-        char: item,
-        fontSize: item.length > 10 ? Math.random() * 4 + 7 : item.length > 1 ? Math.random() * 6 + 8 : Math.random() * 8 + 10, // Uzun teknoloji isimleri daha küçük
+        radius: Math.random() * 2 + 1,
       })
     }
 
     function animate() {
       if (!canvas || !ctx) return
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // Font ayarları
-      ctx.font = 'monospace'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
 
       particles.forEach((p) => {
         p.x += p.vx
@@ -178,10 +156,10 @@ export default function HomePage({ onNavigate, direction, fromPage }: HomePagePr
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1
 
-        // Karakteri çiz
-        ctx.font = `${p.fontSize}px monospace`
-        ctx.fillStyle = "rgba(220, 38, 38, 0.6)"
-        ctx.fillText(p.char, p.x, p.y)
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2)
+        ctx.fillStyle = "rgba(220, 38, 38, 0.5)"
+        ctx.fill()
       })
 
       requestAnimationFrame(animate)
@@ -199,6 +177,25 @@ export default function HomePage({ onNavigate, direction, fromPage }: HomePagePr
   }, [])
 
   const variant = getVariants(direction, fromPage)
+
+  const serviceHighlights = [
+    {
+      title: "Web Sitesi Kurma",
+      description: "Next.js ve .NET ile hızlı açılan, mobil uyumlu ve marka kimliğine uygun kurumsal web siteleri inşa ediyorum.",
+    },
+    {
+      title: "SEO Desteği",
+      description: "Teknik SEO denetimi, içerik stratejisi ve Google Business optimizasyonu ile arama görünürlüğünüzü güçlendiriyorum.",
+    },
+    {
+      title: "Dijital Danışmanlık",
+      description: "KOBİ ve butik markalar için dijital dönüşüm, entegrasyon ve sürdürülebilir büyüme odaklı yol haritaları hazırlıyorum.",
+    },
+    {
+      title: "Bakım & Performans",
+      description: "VDS yönetimi, güvenlik güncellemeleri ve Core Web Vitals optimizasyonları ile kesintisiz hizmet sağlıyorum.",
+    },
+  ]
 
   return (
     <motion.div
@@ -292,6 +289,28 @@ export default function HomePage({ onNavigate, direction, fromPage }: HomePagePr
         >
           Full-Stack Developer | .NET, React, SAP ABAP
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.8 }}
+          className="grid w-full max-w-4xl gap-4 px-6 sm:grid-cols-2"
+          aria-label="Furkan Bayhan profesyonel hizmetleri"
+        >
+          {serviceHighlights.map((service, index) => (
+            <motion.div
+              key={service.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 + index * 0.1, duration: 0.6 }}
+              whileHover={{ scale: 1.03, y: -4 }}
+              className="rounded-xl border border-primary/20 bg-background/70 p-4 text-left shadow-lg shadow-primary/10 backdrop-blur"
+            >
+              <h2 className="text-lg font-semibold text-foreground">{service.title}</h2>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{service.description}</p>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </motion.div>
   )
