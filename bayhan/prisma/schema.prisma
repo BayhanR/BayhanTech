@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Kullanıcılar
+model User {
+  id            String    @id @default(uuid()) @db.Uuid
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  profile       Profile?
+  properties    Property[]
+  products      Product[]
+  subscriptions Subscription[]
+  supportTickets SupportTicket[]
+
+  @@map("users")
+}
+
+// Şirketler (Tezerperde, Brew, Mina Giyim)
+model Company {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String
+  category    String    @unique // "perdeci", "brew", "mina"
+  logoPath    String?   @map("logo_path")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  profiles    Profile[]
+
+  @@map("companies")
+}
+
+// Kullanıcı Profilleri (hangi şirkete ait)
+model Profile {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  companyId String   @map("company_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id])
+
+  @@map("profiles")
+}
+
+// Emlak İlanları (Brew Gayrimenkul)
+model Property {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  title       String
+  description String    @db.Text
+  status      String?   // "completed" | "ongoing"
+  year        Int?
+  progress    Int?      // 0-100
+  city        String?
+  district    String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images      PropertyImage[]
+
+  @@map("properties")
+}
+
+// Emlak Fotoğrafları
+model PropertyImage {
+  id         String   @id @default(uuid()) @db.Uuid
+  propertyId String   @map("property_id") @db.Uuid
+  filePath   String   @map("file_path") // Yerel dosya yolu
+  url        String   // Public URL
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("property_images")
+}
+
+// Ürünler (Perdeci, Mina Giyim)
+model Product {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  name        String
+  description String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images      ProductImage[]
+
+  @@map("products")
+}
+
+// Ürün Fotoğrafları
+model ProductImage {
+  id         String   @id @default(uuid()) @db.Uuid
+  productId  String   @map("product_id") @db.Uuid
+  filePath   String   @map("file_path") // Yerel dosya yolu
+  url        String   // Public URL
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// Abonelikler (Sunucu Kiralama)
+model Subscription {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+// Destek Talepleri
+model SupportTicket {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  subject   String
+  message   String   @db.Text
+  status    String   @default("open") // "open", "closed", "resolved"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("support_tickets")
+}

@@ -1,21 +1,74 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef, useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Cloud, TrendingUp, Bell, MapPin } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Cloud, TrendingUp, Bell, MapPin, X, LogIn } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export default function PortalSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.3 })
   const [weather, setWeather] = useState({ temp: "24°C", condition: "Güneşli" })
   const [stocks, setStocks] = useState({ change: "+2.5%", value: "1,245" })
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     // Placeholder for API calls
     // In real implementation, fetch from weather and stock APIs
   }, [])
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Giriş başarısız')
+      }
+
+      // Login başarılı, portal sayfasına yönlendir
+      setShowLoginModal(false)
+      router.push("/portal")
+      router.refresh()
+    } catch (error: unknown) {
+      // Kullanıcı bulunamadı hatası
+      if (error instanceof Error) {
+        if (error.message.includes("Kullanıcı bulunamadı")) {
+          setError("Kullanıcı bulunamadı. Lütfen sistem yöneticisi ile iletişime geçin.")
+        } else {
+          setError(error.message)
+        }
+      } else {
+        setError("Bir hata oluştu. Lütfen tekrar deneyin.")
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <section id="portal" ref={ref} className="min-h-screen py-20 px-4">
@@ -115,7 +168,106 @@ export default function PortalSection() {
             </Card>
           </motion.div>
         </div>
+
+        {/* Portal Giriş Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="mt-12 text-center"
+        >
+          <Button
+            onClick={() => setShowLoginModal(true)}
+            size="lg"
+            className="px-8 py-6 text-lg gap-2"
+          >
+            <LogIn className="w-5 h-5" />
+            Portal'a Giriş Yap
+          </Button>
+        </motion.div>
       </div>
+
+      {/* Login Modal */}
+      <AnimatePresence>
+        {showLoginModal && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowLoginModal(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            />
+            
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Card className="w-full max-w-md border-border/50 bg-card/95 backdrop-blur-sm relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute top-4 right-4"
+                  onClick={() => setShowLoginModal(false)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+                
+                <CardHeader>
+                  <CardTitle className="text-2xl">Portal Girişi</CardTitle>
+                  <CardDescription>
+                    Portal'a erişmek için giriş yapın
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent>
+                  <form onSubmit={handleLogin} className="space-y-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="modal-email">Email</Label>
+                      <Input
+                        id="modal-email"
+                        type="email"
+                        placeholder="you@example.com"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="bg-background/50"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="modal-password">Şifre</Label>
+                      <Input
+                        id="modal-password"
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="bg-background/50"
+                      />
+                    </div>
+                    {error && (
+                      <p className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+                        {error}
+                      </p>
+                    )}
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? "Giriş yapılıyor..." : "Giriş Yap"}
+                    </Button>
+                  </form>
+                  <div className="mt-4 text-center text-sm text-muted-foreground">
+                    Hesabınız yok mu? Lütfen sistem yöneticisi ile iletişime geçin.
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   )
 }
