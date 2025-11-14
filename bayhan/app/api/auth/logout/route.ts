@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server'
-import { deleteTokenCookie } from '@/lib/auth'
 
 export async function POST() {
   try {
-    await deleteTokenCookie()
-    return NextResponse.json({ message: 'Çıkış yapıldı' })
+    const response = NextResponse.json({ message: 'Çıkış yapıldı' })
+    
+    // Cookie'yi sil (response'a ekle)
+    response.cookies.delete('auth-token')
+    
+    return response
   } catch (error) {
     console.error('Logout error:', error)
     return NextResponse.json(

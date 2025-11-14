@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
-import { generateToken, setTokenCookie } from '@/lib/auth'
+import { generateToken } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   try {
@@ -56,11 +56,8 @@ export async function POST(request: NextRequest) {
       email: user.email,
     })
 
-    // Cookie'ye token yaz
-    await setTokenCookie(token)
-
-    // Kullanıcı bilgilerini döndür (şifre hariç)
-    return NextResponse.json({
+    // Response oluştur
+    const response = NextResponse.json({
       user: {
         id: user.id,
         email: user.email,
@@ -73,6 +70,17 @@ export async function POST(request: NextRequest) {
         },
       },
     })
+
+    // Cookie'ye token yaz (response'a ekle)
+    response.cookies.set('auth-token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 gün
+      path: '/',
+    })
+
+    return response
   } catch (error) {
     console.error('Login error:', error)
     return NextResponse.json(
