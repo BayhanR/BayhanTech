@@ -76,8 +76,8 @@ export default function PortalPage({ onNavigate, direction }: PortalPageProps) {
 
     try {
       const result = await signIn("credentials", {
-        email,
-        password,
+          email,
+          password,
         redirect: false,
       })
 
@@ -89,30 +89,30 @@ export default function PortalPage({ onNavigate, direction }: PortalPageProps) {
       if (result?.ok) {
         // Kullanıcı bilgilerini al
         const response = await fetch('/api/auth/me')
-        const data = await response.json()
+      const data = await response.json()
 
-        // Kullanıcının şirket category'sini kontrol et
-        if (data.user?.profile?.category) {
-          const userCategory = data.user.profile.category
-          if (userCategory !== selectedBusiness) {
-            const allowedBusiness = businesses.find((b) => b.category === userCategory)
+      // Kullanıcının şirket category'sini kontrol et
+      if (data.user?.profile?.category) {
+        const userCategory = data.user.profile.category
+        if (userCategory !== selectedBusiness) {
+          const allowedBusiness = businesses.find((b) => b.category === userCategory)
             await signOut({ redirect: false }) // Sign out
-            setError(
-              allowedBusiness
-                ? `Bu hesap sadece ${allowedBusiness.name} için yetkilidir. Lütfen doğru işletmeyi seçin.`
-                : "Bu hesap belirli bir işletmeye atanmış. Lütfen sistem yöneticisi ile iletişime geçin."
-            )
-            return
-          }
+          setError(
+            allowedBusiness
+              ? `Bu hesap sadece ${allowedBusiness.name} için yetkilidir. Lütfen doğru işletmeyi seçin.`
+              : "Bu hesap belirli bir işletmeye atanmış. Lütfen sistem yöneticisi ile iletişime geçin."
+          )
+          return
         }
+      }
 
-        // Login başarılı, portal dashboard'a yönlendir
-        router.push("/portal/dashboard")
+      // Login başarılı, portal dashboard'a yönlendir
+      router.push("/portal/dashboard")
         router.refresh()
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setError(error.message)
+          setError(error.message)
       } else {
         setError("Bir hata oluştu. Lütfen tekrar deneyin.")
       }

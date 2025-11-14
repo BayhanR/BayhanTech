@@ -1,23 +1,10 @@
-import type { NextAuthConfig } from "next-auth"
+import type { AuthConfig } from "@auth/core"
 
 export const authConfig = {
   pages: {
     signIn: "/portal",
   },
-  callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user
-      const isOnDashboard = nextUrl.pathname.startsWith("/portal/dashboard")
-      
-      if (isOnDashboard) {
-        if (isLoggedIn) return true
-        return false // Redirect unauthenticated users to login page
-      } else if (isLoggedIn && nextUrl.pathname === "/portal") {
-        return Response.redirect(new URL("/portal/dashboard", nextUrl))
-      }
-      return true
-    },
-  },
-  providers: [], // Add providers with an empty array for now
-} satisfies NextAuthConfig
+  providers: [], // Providers are added in auth.ts
+  trustHost: true, // NextAuth.js 5'te localhost için gerekli
+} satisfies AuthConfig
 

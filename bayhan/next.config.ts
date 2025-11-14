@@ -1,4 +1,5 @@
 import type { NextConfig } from "next"
+import path from "path"
 
 const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "/"
 const normalizedBasePath =
@@ -14,6 +15,7 @@ const withBasePath =
 
 const nextConfig: NextConfig = {
   trailingSlash: true,
+  outputFileTracingRoot: path.join(__dirname),
   ...withBasePath,
 }
 

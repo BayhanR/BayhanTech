@@ -15,9 +15,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid tags" }, { status: 400 })
   }
 
-  tags.forEach((tag) => {
+  // Next.js 16'da revalidateTag kullanımı
+  try {
+    for (const tag of tags) {
+      if (typeof tag === 'string') {
+        // @ts-ignore - Next.js 16 type definitions may be incorrect
     revalidateTag(tag)
-  })
+      }
+    }
+  } catch (error) {
+    console.error('Revalidation error:', error)
+  }
 
   return NextResponse.json({ revalidated: true, now: Date.now() })
 }

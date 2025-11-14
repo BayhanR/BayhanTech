@@ -62,16 +62,28 @@ async function main() {
   const expiresAt = new Date()
   expiresAt.setFullYear(expiresAt.getFullYear() + 1)
 
-  await prisma.subscription.upsert({
+  // Kullanıcının aboneliği var mı kontrol et
+  const existingSubscription = await prisma.subscription.findFirst({
     where: { userId: testUser.id },
-    update: {},
-    create: {
-      userId: testUser.id,
-      expiresAt,
-    },
   })
 
-  console.log('✅ Abonelik oluşturuldu')
+  if (existingSubscription) {
+    // Varsa güncelle
+    await prisma.subscription.update({
+      where: { id: existingSubscription.id },
+      data: { expiresAt },
+    })
+    console.log('✅ Abonelik güncellendi')
+  } else {
+    // Yoksa oluştur
+    await prisma.subscription.create({
+      data: {
+        userId: testUser.id,
+        expiresAt,
+      },
+    })
+    console.log('✅ Abonelik oluşturuldu')
+  }
 
   console.log('🎉 Seed tamamlandı!')
 }

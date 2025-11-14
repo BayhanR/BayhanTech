@@ -45,7 +45,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             category: user.profile.company.category,
             company: {
               name: user.profile.company.name,
-              logo: user.profile.company.logoPath,
+              logo: user.profile.company.logoPath || "",
             },
           },
         }

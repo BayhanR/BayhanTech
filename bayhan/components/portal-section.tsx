@@ -35,8 +35,8 @@ export default function PortalSection() {
 
     try {
       const result = await signIn("credentials", {
-        email,
-        password,
+          email,
+          password,
         redirect: false,
       })
 
@@ -46,14 +46,14 @@ export default function PortalSection() {
       }
 
       if (result?.ok) {
-        // Login başarılı, portal sayfasına yönlendir
-        setShowLoginModal(false)
-        router.push("/portal")
-        router.refresh()
+      // Login başarılı, portal sayfasına yönlendir
+      setShowLoginModal(false)
+      router.push("/portal")
+      router.refresh()
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        setError(error.message)
+          setError(error.message)
       } else {
         setError("Bir hata oluştu. Lütfen tekrar deneyin.")
       }

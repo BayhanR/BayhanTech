@@ -69,9 +69,14 @@ New-Item -ItemType Directory -Force -Path "C:\inetpub\wwwroot\BayhanTech\bayhan\
 ### 3. .env Dosyasını Kontrol Et
 ```env
 DATABASE_URL="postgresql://bayhan_user:kemalpasayialicam@localhost:5432/bayhan?schema=public"
-JWT_SECRET="güçlü-bir-secret-key"
+AUTH_SECRET="güçlü-bir-secret-key-buraya"
 UPLOAD_ROOT="C:\\inetpub\\wwwroot\\BayhanTech\\bayhan\\uploads"
 NEXT_PUBLIC_APP_URL="http://your-domain.com"
+```
+
+**AUTH_SECRET Oluşturma:**
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
 
 ### 4. Build ve Deploy

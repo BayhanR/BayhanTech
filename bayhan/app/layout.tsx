@@ -212,7 +212,7 @@ export default function RootLayout({
     <html lang="tr" className="dark">
       <body className={`${inter.className} ${jetbrainsMono.variable} font-sans antialiased`}>
         <Providers>
-          {children}
+        {children}
         </Providers>
         <Analytics />
         <script
