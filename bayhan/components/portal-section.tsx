@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Cloud, TrendingUp, Bell, MapPin, X, LogIn } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 export default function PortalSection() {
   const ref = useRef(null)
@@ -33,35 +34,26 @@ export default function PortalSection() {
     setError(null)
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Giriş başarısız')
+      if (result?.error) {
+        setError("Kullanıcı bulunamadı. Lütfen sistem yöneticisi ile iletişime geçin.")
+        return
       }
 
-      // Login başarılı, portal sayfasına yönlendir
-      setShowLoginModal(false)
-      router.push("/portal")
-      router.refresh()
+      if (result?.ok) {
+        // Login başarılı, portal sayfasına yönlendir
+        setShowLoginModal(false)
+        router.push("/portal")
+        router.refresh()
+      }
     } catch (error: unknown) {
-      // Kullanıcı bulunamadı hatası
       if (error instanceof Error) {
-        if (error.message.includes("Kullanıcı bulunamadı")) {
-          setError("Kullanıcı bulunamadı. Lütfen sistem yöneticisi ile iletişime geçin.")
-        } else {
-          setError(error.message)
-        }
+        setError(error.message)
       } else {
         setError("Bir hata oluştu. Lütfen tekrar deneyin.")
       }

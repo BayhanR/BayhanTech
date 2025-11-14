@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useSession } from "next-auth/react"
 import { PortalHeader } from "@/components/portal-header"
 import { WeatherWidget } from "@/components/weather-widget"
 import { MarketWidget } from "@/components/market-widget"
@@ -10,26 +10,9 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 export default function HomePage() {
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await fetch('/api/auth/me')
-        if (response.ok) {
-          const data = await response.json()
-          setUser(data.user)
-        }
-      } catch (error) {
-        console.error('Failed to get user:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    getUser()
-  }, [])
+  const { data: session, status } = useSession()
+  const loading = status === "loading"
+  const user = session?.user
 
   if (loading) {
     return (

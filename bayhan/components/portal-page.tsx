@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Building2, LogIn } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { signIn, signOut } from "next-auth/react"
 import type { PageType, Direction } from "@/app/page"
 
 interface PortalPageProps {
@@ -74,51 +75,44 @@ export default function PortalPage({ onNavigate, direction }: PortalPageProps) {
     setError(null)
 
     try {
-      // Login API'sine istek gönder
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Giriş başarısız')
+      if (result?.error) {
+        setError("Kullanıcı bulunamadı. Lütfen sistem yöneticisi ile iletişime geçin.")
+        return
       }
 
-      // Kullanıcının şirket category'sini kontrol et
-      if (data.user?.profile?.category) {
-        const userCategory = data.user.profile.category
-        if (userCategory !== selectedBusiness) {
-          const allowedBusiness = businesses.find((b) => b.category === userCategory)
-          // Logout yap
-          await fetch('/api/auth/logout', { method: 'POST' })
-          setError(
-            allowedBusiness
-              ? `Bu hesap sadece ${allowedBusiness.name} için yetkilidir. Lütfen doğru işletmeyi seçin.`
-              : "Bu hesap belirli bir işletmeye atanmış. Lütfen sistem yöneticisi ile iletişime geçin."
-          )
-          return
+      if (result?.ok) {
+        // Kullanıcı bilgilerini al
+        const response = await fetch('/api/auth/me')
+        const data = await response.json()
+
+        // Kullanıcının şirket category'sini kontrol et
+        if (data.user?.profile?.category) {
+          const userCategory = data.user.profile.category
+          if (userCategory !== selectedBusiness) {
+            const allowedBusiness = businesses.find((b) => b.category === userCategory)
+            await signOut({ redirect: false }) // Sign out
+            setError(
+              allowedBusiness
+                ? `Bu hesap sadece ${allowedBusiness.name} için yetkilidir. Lütfen doğru işletmeyi seçin.`
+                : "Bu hesap belirli bir işletmeye atanmış. Lütfen sistem yöneticisi ile iletişime geçin."
+            )
+            return
+          }
         }
-      }
 
-      // Login başarılı, portal dashboard'a yönlendir
-      router.push("/portal/dashboard")
-      router.refresh() // Sayfayı yenile
+        // Login başarılı, portal dashboard'a yönlendir
+        router.push("/portal/dashboard")
+        router.refresh()
+      }
     } catch (error: unknown) {
-      // Kullanıcı bulunamadı hatası
       if (error instanceof Error) {
-        if (error.message.includes("Kullanıcı bulunamadı")) {
-          setError("Kullanıcı bulunamadı. Lütfen sistem yöneticisi ile iletişime geçin.")
-        } else {
-          setError(error.message)
-        }
+        setError(error.message)
       } else {
         setError("Bir hata oluştu. Lütfen tekrar deneyin.")
       }

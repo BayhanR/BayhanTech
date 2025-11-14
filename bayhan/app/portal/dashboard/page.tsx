@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/auth-helpers"
 import { PortalHeader } from "@/components/portal-header"
 import { BrewDashboard } from "@/components/brew-dashboard"
 import { PerdecDashboard } from "@/components/perdeci-dashboard"

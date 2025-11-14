@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useSession, signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
@@ -25,47 +25,27 @@ const businesses = [
 ]
 
 export function PortalHeader() {
-  const [user, setUser] = useState<any>(null)
-  const [userCategory, setUserCategory] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { data: session, status } = useSession()
   const pathname = usePathname()
   const router = useRouter()
   
   // Sadece dashboard sayfalarında dark mode toggle göster
   const isDashboardPage = pathname?.startsWith("/portal/dashboard")
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await fetch('/api/auth/me')
-        if (response.ok) {
-          const data = await response.json()
-          setUser(data.user)
-          if (data.user?.profile?.category) {
-            setUserCategory(data.user.profile.category)
-          }
-        }
-      } catch (error) {
-        console.error('Failed to get user:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    getUser()
-  }, [])
-
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' })
+      await signOut({ redirect: false })
       router.push('/')
       router.refresh()
     } catch (error) {
       console.error('Logout error:', error)
-      // Hata olsa bile yönlendir
       window.location.href = '/'
     }
   }
+
+  const loading = status === "loading"
+  const user = session?.user
+  const userCategory = (user as any)?.profile?.category || null
 
   if (loading) return null
 

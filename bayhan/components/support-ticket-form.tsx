@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSession } from "next-auth/react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { MessageSquare, Loader2 } from "lucide-react"
 
 export function SupportTicketForm() {
+  const { data: session } = useSession()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [subject, setSubject] = useState("")
@@ -24,18 +26,9 @@ export function SupportTicketForm() {
     setSuccess(false)
 
     try {
-      // Kullanıcı bilgilerini al
-      const userResponse = await fetch('/api/auth/me')
-      let userEmail = email
-      let userName = name
-
-      if (userResponse.ok) {
-        const userData = await userResponse.json()
-        if (userData.user) {
-          userEmail = email || userData.user.email || ""
-          userName = name || userData.user.email || "Portal Kullanıcısı"
-        }
-      }
+      // Kullanıcı bilgilerini session'dan al
+      let userEmail = email || session?.user?.email || ""
+      let userName = name || session?.user?.email || "Portal Kullanıcısı"
 
       // Support ticket oluştur
       const ticketResponse = await fetch("/api/support-tickets", {

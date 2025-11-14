@@ -1,31 +1,23 @@
 import { NextResponse } from 'next/server'
-import { getCurrentUser } from '@/lib/auth'
+import { auth } from '@/auth'
 
 export async function GET() {
   try {
-    const user = await getCurrentUser()
+    const session = await auth()
 
-    if (!user) {
+    if (!session?.user) {
       return NextResponse.json(
         { error: 'Yetkilendirme gerekli' },
         { status: 401 }
       )
     }
 
-    // Şifre hariç kullanıcı bilgilerini döndür
+    // Kullanıcı bilgilerini döndür
     return NextResponse.json({
       user: {
-        id: user.id,
-        email: user.email,
-        profile: user.profile
-          ? {
-              category: user.profile.company.category,
-              company: {
-                name: user.profile.company.name,
-                logo: user.profile.company.logoPath,
-              },
-            }
-          : null,
+        id: session.user.id,
+        email: session.user.email,
+        profile: session.user.profile || null,
       },
     })
   } catch (error) {

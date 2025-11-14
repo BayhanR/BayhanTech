@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/lib/auth"
+import { getCurrentUser } from "@/lib/auth-helpers"
 import { prisma } from "@/lib/prisma"
 import { PortalHeader } from "@/components/portal-header"
 import { ProductImageUpload } from "@/components/product-image-upload"
