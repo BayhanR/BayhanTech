@@ -241,3 +241,4 @@ npm run prisma:studio
 
 Tarayıcıda `http://localhost:5555` açılacak ve tüm tabloları görebilirsin.
 
+

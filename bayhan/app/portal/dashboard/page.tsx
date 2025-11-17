@@ -1,5 +1,8 @@
-import { redirect } from "next/navigation"
-import { getCurrentUser } from "@/lib/auth-helpers"
+"use client"
+
+import { useEffect } from "react"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { PortalHeader } from "@/components/portal-header"
 import { BrewDashboard } from "@/components/brew-dashboard"
 import { PerdecDashboard } from "@/components/perdeci-dashboard"
@@ -10,22 +13,51 @@ import { NewsWidget } from "@/components/news-widget"
 import { SupportTicketForm } from "@/components/support-ticket-form"
 import { SubscriptionWidget } from "@/components/subscription-widget"
 
-export default async function DashboardPage() {
-  const user = await getCurrentUser()
+export default function DashboardPage() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  
+  // Portal sayfalarında body ve html overflow'unu aç
+  useEffect(() => {
+    document.body.style.overflow = 'auto'
+    document.documentElement.style.overflow = 'auto'
+    
+    return () => {
+      document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
+    }
+  }, [])
 
-  if (!user) {
-    redirect("/portal")
+  // Session kontrolü
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push("/portal")
+  }
+  }, [status, router])
+
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-muted-foreground">Yükleniyor...</p>
+      </div>
+    )
   }
 
-  // Profile kontrolü
-  if (!user.profile) {
-    redirect("/portal")
+  if (!session?.user) {
+    return null
   }
 
-  const category = user.profile.company.category
+  const user = session.user
+  const profile = (user as any)?.profile
+
+  if (!profile) {
+    return null
+  }
+
+  const category = profile.company?.category
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="h-screen bg-background overflow-y-scroll overscroll-contain" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
       <PortalHeader />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Widget'lar - Üstte */}

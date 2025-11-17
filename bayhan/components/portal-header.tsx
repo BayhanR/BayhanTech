@@ -35,11 +35,14 @@ export function PortalHeader() {
   const handleLogout = async () => {
     try {
       await signOut({ redirect: false })
-      router.push('/')
-      router.refresh()
+      // Ana sayfaya (base path) yönlendir
+      // Base path'i al (build-time'da değerlenir, NEXT_PUBLIC_ prefix'i client-side'da kullanılabilir)
+      const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || '/').replace(/\/$/, '')
+      window.location.href = basePath || '/'
     } catch (error) {
       console.error('Logout error:', error)
-      window.location.href = '/'
+      const basePath = (process.env.NEXT_PUBLIC_BASE_PATH || '/').replace(/\/$/, '')
+      window.location.href = basePath || '/'
     }
   }
 

@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
     })
 
-    return NextResponse.json(images.map(img => img.url))
+    return NextResponse.json(images.map((img: { url: string }) => img.url))
   } catch (error) {
     console.error('Property images fetch error:', error)
     return NextResponse.json({ error: 'Failed to fetch images' }, { status: 500 })

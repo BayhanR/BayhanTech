@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { PortalHeader } from "@/components/portal-header"
 import { WeatherWidget } from "@/components/weather-widget"
@@ -14,6 +15,17 @@ export default function HomePage() {
   const loading = status === "loading"
   const user = session?.user
 
+  // Portal sayfalarında body ve html overflow'unu aç
+  useEffect(() => {
+    document.body.style.overflow = 'auto'
+    document.documentElement.style.overflow = 'auto'
+    
+    return () => {
+      document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
+    }
+  }, [])
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -24,7 +36,7 @@ export default function HomePage() {
 
   if (!user) {
     return (
-      <main className="min-h-screen bg-background">
+      <main className="h-screen bg-background overflow-y-scroll overscroll-contain" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
         <PortalHeader />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 text-balance">
@@ -42,7 +54,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="h-screen bg-background overflow-y-scroll overscroll-contain" style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-y' }}>
       <PortalHeader />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">

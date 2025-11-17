@@ -248,3 +248,4 @@ PostgreSQL kurulduktan ve çalıştıktan sonra:
 3. ✅ `npm run prisma:migrate` çalıştır
 4. ✅ `npm run prisma:test` ile bağlantıyı test et
 
+

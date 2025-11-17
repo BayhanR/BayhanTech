@@ -9,45 +9,62 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            console.log('[AUTH] Missing credentials')
+            return null
+          }
 
-        const user = await prisma.user.findUnique({
-          where: { email: (credentials.email as string).toLowerCase() },
-          include: {
-            profile: {
-              include: {
-                company: true,
+          const email = (credentials.email as string).toLowerCase()
+          console.log('[AUTH] Attempting login for:', email)
+
+          const user = await prisma.user.findUnique({
+            where: { email },
+            include: {
+              profile: {
+                include: {
+                  company: true,
+                },
               },
             },
-          },
-        })
+          })
 
-        if (!user || !user.profile) {
-          return null
-        }
+          if (!user) {
+            console.log('[AUTH] User not found:', email)
+            return null
+          }
 
-        const isValidPassword = await bcrypt.compare(
-          credentials.password as string,
-          user.passwordHash
-        )
+          if (!user.profile) {
+            console.log('[AUTH] User has no profile:', email)
+            return null
+          }
 
-        if (!isValidPassword) {
-          return null
-        }
+          const isValidPassword = await bcrypt.compare(
+            credentials.password as string,
+            user.passwordHash
+          )
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.email,
-          profile: {
-            category: user.profile.company.category,
-            company: {
-              name: user.profile.company.name,
-              logo: user.profile.company.logoPath || "",
+          if (!isValidPassword) {
+            console.log('[AUTH] Invalid password for:', email)
+            return null
+          }
+
+          console.log('[AUTH] Login successful for:', email)
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.email,
+            profile: {
+              category: user.profile.company.category,
+              company: {
+                name: user.profile.company.name,
+                logo: user.profile.company.logoPath || "",
+              },
             },
-          },
+          }
+        } catch (error) {
+          console.error('[AUTH] Error during authorization:', error)
+          return null
         }
       },
     }),

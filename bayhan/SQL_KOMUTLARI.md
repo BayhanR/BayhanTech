@@ -157,3 +157,4 @@ SQL komutlarını çalıştırdıktan sonra:
 ### "extension already exists" hatası
 - Extension zaten var, devam et (sorun değil)
 
+

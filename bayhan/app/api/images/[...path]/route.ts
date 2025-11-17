@@ -41,11 +41,17 @@ export async function GET(
       ext === 'webp' ? 'image/webp' :
       'application/octet-stream'
 
+    // CORS header'ları (diğer projelerden erişim için)
+    const allowedOrigin = process.env.ALLOWED_ORIGIN || '*'
+    
     // Dosyayı döndür
     return new NextResponse(fileBuffer, {
       headers: {
         'Content-Type': contentType,
         'Cache-Control': 'public, max-age=31536000, immutable',
+        'Access-Control-Allow-Origin': allowedOrigin,
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers': 'Content-Type',
       },
     })
   } catch (error: unknown) {

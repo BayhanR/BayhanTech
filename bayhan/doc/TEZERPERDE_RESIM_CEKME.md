@@ -1,0 +1,348 @@
+# 🪟 Tezerperde.com - Resim Çekme Rehberi
+
+## 📋 Genel Bilgi
+
+**Site:** Tezerperde.com  
+**Category:** `perdeci`  
+**Veri Tipi:** Products (Perde Ürünleri)  
+**API Base URL:** `https://bayhan.tech`
+
+---
+
+## 🛍️ Product Sistemi
+
+Tezerperde.com, **perde ürünleri** (products) kullanır. Her product şu bilgileri içerir:
+
+- **Name:** Ürün adı (örn: "Perde 17.11.2024 - 1234567890")
+- **Description:** Ürün açıklaması
+- **Images:** Fotoğraflar (her ürün için en az 1 fotoğraf)
+
+**Not:** Tezerperde'de her fotoğraf için otomatik olarak ayrı bir product oluşturulur.
+
+---
+
+## 📸 Resim Çekme Yöntemleri
+
+### Yöntem 1: Tekil Resim URL'i (Önerilen)
+
+Bir product'un belirli bir resmini çekmek için:
+
+```typescript
+// lib/bayhan-images.ts
+const BAYHAN_API_URL = process.env.BAYHAN_API_URL || 'https://bayhan.tech'
+
+export function getTezerperdeProductImageUrl(
+  productId: string,
+  fileName: string
+): string {
+  return `${BAYHAN_API_URL}/api/images/products/${productId}/${fileName}`
+}
+```
+
+**Kullanım:**
+```tsx
+import Image from 'next/image'
+import { getTezerperdeProductImageUrl } from '@/lib/bayhan-images'
+
+// Product ID ve dosya adını bilmeniz gerekiyor
+const imageUrl = getTezerperdeProductImageUrl('product-uuid', '1234567890-abc123.jpg')
+
+<Image
+  src={imageUrl}
+  alt="Tezerperde Product"
+  width={800}
+  height={600}
+/>
+```
+
+---
+
+### Yöntem 2: Product'un Tüm Resimlerini Çek
+
+Bir product'un tüm resimlerini listelemek için:
+
+```typescript
+// lib/bayhan-images.ts
+
+export async function getTezerperdeProductImages(
+  productId: string
+): Promise<string[]> {
+  try {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    }
+    
+    // Token varsa ekle (opsiyonel)
+    if (process.env.BAYHAN_API_TOKEN) {
+      headers['Authorization'] = `Bearer ${process.env.BAYHAN_API_TOKEN}`
+    }
+    
+    const response = await fetch(
+      `${BAYHAN_API_URL}/api/images/public/products/${productId}`,
+      { headers }
+    )
+    
+    if (!response.ok) {
+      console.error(`Tezerperde API error: ${response.status}`)
+      return []
+    }
+    
+    const data = await response.json()
+    return data.images || []
+  } catch (error) {
+    console.error('Tezerperde product images fetch error:', error)
+    return []
+  }
+}
+```
+
+**Kullanım:**
+```tsx
+'use client'
+
+import { useEffect, useState } from 'react'
+import { getTezerperdeProductImages } from '@/lib/bayhan-images'
+import Image from 'next/image'
+
+export function TezerperdeProductCard({ productId }: { productId: string }) {
+  const [images, setImages] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const imageUrls = await getTezerperdeProductImages(productId)
+      setImages(imageUrls)
+      setLoading(false)
+    }
+    fetchImages()
+  }, [productId])
+
+  if (loading) return <div>Yükleniyor...</div>
+
+  return (
+    <div className="grid grid-cols-1 gap-4">
+      {images.map((url, index) => (
+        <Image
+          key={index}
+          src={url}
+          alt={`Perde Ürünü ${index + 1}`}
+          width={600}
+          height={800}
+          className="object-cover rounded"
+        />
+      ))}
+    </div>
+  )
+}
+```
+
+---
+
+### Yöntem 3: Tüm Product'ları ve Resimlerini Çek
+
+Tüm product'ları ve resimlerini çekmek için:
+
+```typescript
+// lib/bayhan-products.ts
+
+const BAYHAN_API_URL = process.env.BAYHAN_API_URL || 'https://bayhan.tech'
+
+export interface TezerperdeProduct {
+  id: string
+  name: string
+  description: string | null
+  images: string[]
+}
+
+export async function getTezerperdeProducts(): Promise<TezerperdeProduct[]> {
+  try {
+    // Not: Bu endpoint şu an yok, eklenebilir
+    // Şimdilik product'ları başka bir yöntemle çekmeniz gerekebilir
+    
+    // Örnek: Veritabanından direkt çekme (eğer aynı veritabanını kullanıyorsanız)
+    // VEYA yeni bir public API endpoint'i eklenebilir
+    
+    return []
+  } catch (error) {
+    console.error('Tezerperde products fetch error:', error)
+    return []
+  }
+}
+```
+
+---
+
+## 🔗 API Endpoint'leri
+
+### 1. Resim Servis Etme
+```
+GET /api/images/products/{productId}/{fileName}
+```
+
+**Örnek:**
+```
+GET https://bayhan.tech/api/images/products/abc-123-def/1234567890-xyz.jpg
+```
+
+**Response:** Image file (binary)
+
+---
+
+### 2. Resim Listesi (Public)
+```
+GET /api/images/public/products/{productId}
+```
+
+**Headers (Opsiyonel):**
+```
+Authorization: Bearer {token}
+```
+
+**Response:**
+```json
+{
+  "images": [
+    "/api/images/products/abc-123-def/1234567890-xyz.jpg",
+    "/api/images/products/abc-123-def/1234567891-abc.jpg"
+  ],
+  "count": 2
+}
+```
+
+---
+
+## ⚙️ Next.js Konfigürasyonu
+
+`next.config.ts` dosyasına ekle:
+
+```typescript
+module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'bayhan.tech',
+        pathname: '/api/images/**',
+      },
+    ],
+  },
+}
+```
+
+---
+
+## 🔐 Güvenlik
+
+### Environment Variables
+
+`.env.local` dosyasına ekle:
+
+```env
+BAYHAN_API_URL="https://bayhan.tech"
+BAYHAN_API_TOKEN="your-token-here" # Opsiyonel
+```
+
+### CORS
+
+Eğer farklı bir domain'den erişiyorsanız, BayhanTech projesinde `.env` dosyasına:
+
+```env
+ALLOWED_ORIGIN="https://tezerperde.com"
+```
+
+---
+
+## 📝 Örnek: Tam Entegrasyon
+
+```tsx
+'use client'
+
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { getTezerperdeProductImages } from '@/lib/bayhan-images'
+
+interface Product {
+  id: string
+  name: string
+  description: string | null
+}
+
+export function TezerperdeProductGallery({ products }: { products: Product[] }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  )
+}
+
+function ProductCard({ product }: { product: Product }) {
+  const [images, setImages] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const imageUrls = await getTezerperdeProductImages(product.id)
+      setImages(imageUrls)
+      setLoading(false)
+    }
+    fetchImages()
+  }, [product.id])
+
+  return (
+    <div className="border rounded-lg overflow-hidden">
+      <h3 className="p-4 font-semibold">{product.name}</h3>
+      {loading ? (
+        <div className="h-64 bg-gray-200 animate-pulse" />
+      ) : images.length > 0 ? (
+        <Image
+          src={images[0]}
+          alt={product.name}
+          width={400}
+          height={600}
+          className="w-full h-auto object-cover"
+        />
+      ) : (
+        <div className="h-64 bg-gray-100 flex items-center justify-center">
+          <p className="text-gray-400">Resim bulunamadı</p>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+---
+
+## ✅ Checklist
+
+- [ ] `.env.local` dosyasına `BAYHAN_API_URL` eklendi
+- [ ] `next.config.ts`'de external domain eklendi
+- [ ] `lib/bayhan-images.ts` oluşturuldu
+- [ ] Component'lerde resim URL'leri kullanılıyor
+- [ ] CORS ayarları yapıldı (gerekirse)
+
+---
+
+## 🆘 Sorun Giderme
+
+### Resimler görünmüyor
+- `BAYHAN_API_URL` doğru mu kontrol et
+- `next.config.ts`'de `remotePatterns` eklendi mi kontrol et
+- Browser console'da CORS hatası var mı kontrol et
+
+### 401 Unauthorized
+- Token gerekli mi kontrol et
+- Token doğru mu kontrol et
+
+### 404 Not Found
+- Product ID doğru mu kontrol et
+- Dosya adı doğru mu kontrol et
+
+---
+
+## 📞 Destek
+
+Sorun yaşarsanız, BayhanTech projesindeki `RESIM_PAYLASIM_REHBERI.md` dosyasına bakın.
+
