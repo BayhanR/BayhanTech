@@ -7,6 +7,83 @@ import { existsSync } from 'fs'
 
 const UPLOAD_ROOT = process.env.UPLOAD_ROOT || 'C:\\inetpub\\wwwroot\\BayhanTech\\bayhan\\uploads'
 
+// CORS headers helper
+function getCorsHeaders() {
+  const allowedOrigin = process.env.ALLOWED_ORIGIN || '*'
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  }
+}
+
+// OPTIONS handler for CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: getCorsHeaders(),
+  })
+}
+
+// Public GET endpoint - Tüm property'leri listele
+export async function GET(request: NextRequest) {
+  try {
+    // Optional token verification
+    const token = request.headers.get('authorization')?.replace('Bearer ', '')
+    if (process.env.IMAGE_API_TOKEN && token !== process.env.IMAGE_API_TOKEN) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401, headers: getCorsHeaders() }
+      )
+    }
+
+    // Tüm property'leri çek (resimlerle birlikte)
+    const properties = await prisma.property.findMany({
+      include: {
+        images: {
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    // Base URL'i al
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BASE_PATH || 'https://bayhan.tech'
+    const cleanBaseUrl = baseUrl.replace(/\/$/, '') // Trailing slash'i kaldır
+
+    // Response formatı: her property için resim URL'lerini ekle (tam URL)
+    const propertiesWithImages = properties.map((property) => ({
+      id: property.id,
+      title: property.title,
+      description: property.description,
+      status: property.status,
+      year: property.year,
+      progress: property.progress,
+      city: property.city,
+      district: property.district,
+      createdAt: property.createdAt,
+      images: property.images.map((img) => {
+        // Eğer URL zaten tam URL ise olduğu gibi döndür, değilse base URL ekle
+        if (img.url.startsWith('http://') || img.url.startsWith('https://')) {
+          return img.url
+        }
+        return `${cleanBaseUrl}${img.url}`
+      }),
+    }))
+
+    return NextResponse.json(
+      { properties: propertiesWithImages, count: properties.length },
+      { headers: getCorsHeaders() }
+    )
+  } catch (error) {
+    console.error('Properties fetch error:', error)
+    return NextResponse.json(
+      { error: 'Failed to fetch properties' },
+      { status: 500, headers: getCorsHeaders() }
+    )
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await auth()
